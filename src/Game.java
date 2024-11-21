@@ -39,10 +39,7 @@ public class Game {
     public String imgNameExt;
     public static String imgName;
 
-    public Player p1;
-    public Player p2;
-    public Player p3;
-    public Player p4;
+    public Player p1, p2, p3, p4;
 
 
     public boolean setPlayerNames() {
@@ -211,7 +208,7 @@ public class Game {
         Group imgGrupo = new Group();
 
         // grupo posição top
-        HBox labelTop = new HBox();
+        VBox labelTop = new VBox();
         labelTop.setAlignment(Pos.CENTER);
         labelTop.setSpacing(10);
 
@@ -249,10 +246,29 @@ public class Game {
         };
         btUndoLista.setOnAction(onbtUndoListaClick);
 
+        HBox labelCaption1 = new HBox();
+        labelCaption1.setAlignment(Pos.CENTER_LEFT);
+        labelCaption1.setSpacing(8);
+        labelCaption1.getChildren().addAll(cGreen, iGreen);
+
+        HBox labelCaption2 = new HBox();
+        labelCaption2.setAlignment(Pos.CENTER_LEFT);
+        labelCaption2.setSpacing(8);
+        labelCaption2.getChildren().addAll(cBlue, iBlue);
+
+        HBox labelCaption3 = new HBox();
+        labelCaption3.setAlignment(Pos.CENTER_LEFT);
+        labelCaption3.setSpacing(8);
+        labelCaption3.getChildren().addAll(cYellow, iYellow);
+
+        HBox labelCaption4 = new HBox();
+        labelCaption4.setAlignment(Pos.CENTER_LEFT);
+        labelCaption4.setSpacing(8);
+        labelCaption4.getChildren().addAll(cRed, iRed);
+
         labelTop.getChildren().addAll(
-            cGreen, iGreen, cBlue,
-            iBlue, cYellow, iYellow,
-            cRed, iRed, btUndoLista
+            labelCaption1, labelCaption2, labelCaption3,
+            labelCaption4, btUndoLista
         );
 
         // information label
@@ -313,75 +329,75 @@ public class Game {
         btDadoPin.setDisable(true);
         EventHandler<ActionEvent> onbtDadoPinClick = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
-                if (p1Pos == -1) {
-                    btImportaLista.setDisable(true);
-                    btLimpaLista.setDisable(true);
-                    btSalvaLista.setDisable(true);
-                    try {
-                        Image pin = new Image(new FileInputStream("misc\\pin_1.png"));
-                        img = new ImageView(pin);
-                        img.setFitHeight(35);
-                        img.setPreserveRatio(true);
-                    } catch (IOException excep){
-                        System.out.println(excep.getMessage());
+                    currentPlayer = p1;
+
+                    if (p1Pos == -1) {
+
+                        btImportaLista.setDisable(true);
+                        btLimpaLista.setDisable(true);
+                        try {
+                            Image pin = new Image(new FileInputStream("misc\\pin_" + currentPlayer.getId() + ".png"));
+                            img = new ImageView(pin);
+                            img.setFitHeight(35);
+                            img.setPreserveRatio(true);
+                        } catch (IOException excep){
+                            System.out.println(excep.getMessage());
+                        }
+                        imgGrupo.getChildren().add(img);
+                        p1Pos++;
+                    } else {
+                        // Sorteio do valor do dado
+                        int diceValue = jogaDados();
+                        String diceImagePath = "misc/dice/dice_" + diceValue + ".png";
+
+                        try {
+                            // Carrega a imagem do dado
+                            Image diceImage = new Image(new FileInputStream(diceImagePath));
+                            ImageView diceImgView = new ImageView(diceImage);
+                            diceImgView.setFitHeight(50);  // Ajuste o tamanho conforme necessário
+                            diceImgView.setPreserveRatio(true);
+
+                            // Cria um painel (como um Label) para exibir a imagem do dado no stage
+                            StackPane dicePane = new StackPane();
+                            dicePane.getChildren().add(diceImgView);
+                            imgGrupo.getChildren().add(dicePane); // Adiciona a imagem do dado ao grupo
+
+                        } catch (IOException excep) {
+                            System.out.println("Erro ao carregar a imagem do dado: " + excep.getMessage());
+                        }
+
+                        labelInfo.setText("Valor do dado: " + diceValue);
+
+                        // Movimenta o pin conforme o valor sorteado
+                        p1Pos += diceValue;
+                        if (p1Pos >= listaPontos.size()) {
+                            p1Pos = 0;
+                            gameAlert("Parábens, você venceu!");
+                        }
                     }
-                    imgGrupo.getChildren().add(img);
-                    p1Pos++;
-                } else {
-                    // Sorteio do valor do dado
-                    int diceValue = jogaDados();
-                    String diceImagePath = "misc/dice/dice_" + diceValue + ".png";
-
-
-
-                    try {
-                        // Carrega a imagem do dado
-                        Image diceImage = new Image(new FileInputStream(diceImagePath));
-                        ImageView diceImgView = new ImageView(diceImage);
-                        diceImgView.setFitHeight(50);  // Ajuste o tamanho conforme necessário
-                        diceImgView.setPreserveRatio(true);
-
-                        // Cria um painel (como um Label) para exibir a imagem do dado no stage
-                        StackPane dicePane = new StackPane();
-                        dicePane.getChildren().add(diceImgView);
-                        imgGrupo.getChildren().add(dicePane); // Adiciona a imagem do dado ao grupo
-
-                    } catch (IOException excep) {
-                        System.out.println("Erro ao carregar a imagem do dado: " + excep.getMessage());
+                    switch (listaPontos.get(p1Pos).estilo) {
+                        // ponto azul
+                        case 1:
+                            // para uma rodada
+                            // off-line nao precisa parar uma rodada
+                            labelInfo.setText("O jogador caiu na casa azul e não jogará por uma rodada!");
+                            break;
+                        // ponto amarelo
+                        case 2:
+                            // avança duas casas
+                            p1Pos += 2;
+                            labelInfo.setText("O jogador caiu na casa amarela e avançou mais duas casas!");
+                            break;
+                        // ponto vermelho
+                        case 3:
+                            // volta ao inicio
+                            p1Pos = 0;
+                            labelInfo.setText("O jogador caiu na casa vermelha e voltou ao início!");
+                            break;
                     }
 
-                    labelInfo.setText("Valor do dado: " + diceValue);
-
-                    // Movimenta o pin conforme o valor sorteado
-                    p1Pos += diceValue;
-                    if (p1Pos >= listaPontos.size()) {
-                        p1Pos = 0;
-                        gameAlert("Parábens, você venceu!");
-                    }
-                }
-                switch (listaPontos.get(p1Pos).estilo) {
-                    // ponto azul
-                    case 1:
-                        // para uma rodada
-                        // off-line nao precisa parar uma rodada
-                        labelInfo.setText("O jogador caiu na casa azul e não jogará por uma rodada!");
-                        break;
-                    // ponto amarelo
-                    case 2:
-                        // avança duas casas
-                        p1Pos += 2;
-                        labelInfo.setText("O jogador caiu na casa amarela e avançou mais duas casas!");
-                        break;
-                    // ponto vermelho
-                    case 3:
-                        // volta ao inicio
-                        p1Pos = 0;
-                        labelInfo.setText("O jogador caiu na casa vermelha e voltou ao início!");
-                        break;
-                }
-
-                img.setTranslateX(listaPontos.get(p1Pos).ponto.getX() - 20);
-                img.setTranslateY(listaPontos.get(p1Pos).ponto.getY() - 20);
+                    img.setTranslateX(listaPontos.get(p1Pos).ponto.getX() - 20);
+                    img.setTranslateY(listaPontos.get(p1Pos).ponto.getY() - 20);
             }
         };
         btDadoPin.setOnAction(onbtDadoPinClick);
@@ -419,20 +435,22 @@ public class Game {
 
         imgGrupo.getChildren().add(imageView);
 
+        VBox centerVBox = new VBox();
+        centerVBox.setSpacing(10);
+        centerVBox.getChildren().addAll(labelPlayer1, imgGrupo, labelInfo);
 
+        centerVBox.setAlignment(Pos.CENTER);
 
-        VBox centerBox = new VBox();
-        centerBox.setSpacing(10);
-        centerBox.getChildren().addAll(labelPlayer1, imgGrupo, labelInfo);
-
-        centerBox.setAlignment(Pos.CENTER);
+        HBox centerHBox = new HBox();
+        centerHBox.setSpacing(10);
+        centerHBox.getChildren().addAll(centerVBox, labelTop);
 
         // BorderPane
         BorderPane borderPane = new BorderPane();
-        borderPane.setTop(labelTop);
+        borderPane.setTop(btUndoLista);
         BorderPane.setMargin(labelTop, new Insets(10));
         BorderPane.setAlignment(labelTop, Pos.CENTER);
-        borderPane.setCenter(centerBox);
+        borderPane.setCenter(centerHBox);
 
         // Setting the image view
         // setting the fit height and width of the image view
@@ -460,7 +478,6 @@ public class Game {
         Scene scene = new Scene(borderPane, 800, 650);
         stage.setTitle("D-TABLETOP - Offline");
         stage.setScene(scene);
-        stage.setResizable(false);
         stage.show();
     }
 
