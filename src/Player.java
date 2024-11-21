@@ -13,6 +13,10 @@ public class Player {
         return nome;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public int getPos() {
         return pos;
     }
