@@ -9,7 +9,7 @@ public class UDPComm {
     char[] msg = new char[256];
     byte[] msgByte = new byte[256];
 
-    public boolean sendMsg(){
+    public boolean sendMsg() {
         try {
             // envia msg para destino
             InetAddress addr = InetAddress.getByName(host);
@@ -21,23 +21,23 @@ public class UDPComm {
             ds.send(pkg);
             ds.close();
             return true;
-        } catch (IOException ioe){
+        } catch (IOException ioe) {
             return false;
         }
     }
 
-    public boolean receiveMsg(){
+    public boolean receiveMsg() {
         byte[] msgByte = new byte[256];
         try {
             // recebe msgByte
             DatagramSocket ds = new DatagramSocket(port);
-            //Prepara o pacote de dados
+            // prepara o pacote de dados
             DatagramPacket pkg = new DatagramPacket(msgByte, msgByte.length);
-            //Recebimento da mensagem
+            // recebimento da mensagem
             ds.receive(pkg);
-            // Ajusta host de remessa
+            // ajusta host de remessa
             this.host = pkg.getAddress().getHostName();
-            // Ajusta mensagem recebida
+            // ajusta mensagem recebida
             setMsg(pkg.getData());
             ds.close();
             return true;
@@ -54,8 +54,8 @@ public class UDPComm {
 
     public char[] getMsg(){
         String msgStr = "";
-        for (int i=0;i<this.msgByte.length;i++){
-            if (this.msgByte[i]!=0)
+        for (int i = 0; i < this.msgByte.length; i++){
+            if (this.msgByte[i] != 0)
                 msgStr = msgStr + this.msgByte[i];
         }
         return msgStr.toCharArray();
@@ -82,14 +82,14 @@ public class UDPComm {
 
     private byte[] charToByte(char[] msg){
         byte[] msgByte = new byte[msg.length];
-        for (int i = 0;i<msg.length;i++)
+        for (int i = 0; i < msg.length; i++)
             msgByte[i] = (byte) msg[i];
         return msgByte;
     }
 
     private char[] byteToChar(byte[] msgByte){
         char[] msg = new char[msgByte.length];
-        for (int i = 0;i<msgByte.length;i++)
+        for (int i = 0; i < msgByte.length; i++)
             msg[i] = (char) msgByte[i];
         return msg;
     }
