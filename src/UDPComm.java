@@ -14,7 +14,7 @@ public class UDPComm {
             // envia msg para destino
             InetAddress addr = InetAddress.getByName(host);
             // monta o pacote a ser enviado
-            DatagramPacket pkg = new DatagramPacket(charToByte(msg),msg.length, addr, port);
+            DatagramPacket pkg = new DatagramPacket(charToByte(msg), msg.length, addr, port);
             // cria o DatagramSocket que será responsável por enviar a mensagem
             DatagramSocket ds = new DatagramSocket();
             // envia a mensagem
@@ -47,7 +47,7 @@ public class UDPComm {
         }
     }
 
-    public void setMsg(byte[] msgByte){
+    public void setMsg(byte[] msgByte) {
         this.msgByte = msgByte;
         this.msg = getMsg();
     }
@@ -61,17 +61,6 @@ public class UDPComm {
         return msgStr.toCharArray();
     }
 
-    public char[] getJogada(){
-        char[] jogada = {' ',' ',' ',' ',' ',' ',' ',' ',' '};
-        for (int i=0;i<this.msg.length;i++) {
-            if (i > 8) break;
-            if (this.msg[i] != 0) {
-                jogada[i] = this.msg[i];
-            }
-        }
-        return jogada;
-    }
-
     public UDPComm(String host, int port) {
         this.host = host;
         this.port = port;
@@ -80,14 +69,14 @@ public class UDPComm {
         this.port = port;
     }
 
-    private byte[] charToByte(char[] msg){
+    private byte[] charToByte(char[] msg) {
         byte[] msgByte = new byte[msg.length];
         for (int i = 0; i < msg.length; i++)
             msgByte[i] = (byte) msg[i];
         return msgByte;
     }
 
-    private char[] byteToChar(byte[] msgByte){
+    private char[] byteToChar(byte[] msgByte) {
         char[] msg = new char[msgByte.length];
         for (int i = 0; i < msgByte.length; i++)
             msg[i] = (char) msgByte[i];
