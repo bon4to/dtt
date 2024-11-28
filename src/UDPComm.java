@@ -8,6 +8,7 @@ public class UDPComm {
     int port;
     char[] msg = new char[256];
     byte[] msgByte = new byte[256];
+    String msgStr = "";
 
     public boolean sendMsg() {
         try {
@@ -52,9 +53,8 @@ public class UDPComm {
         this.msg = getMsg();
     }
 
-    public char[] getMsg(){
-        String msgStr = "";
-        for (int i = 0; i < this.msgByte.length; i++){
+    public char[] getMsg() {
+        for (int i = 0; i < this.msgByte.length; i++) {
             if (this.msgByte[i] != 0)
                 msgStr = msgStr + this.msgByte[i];
         }
