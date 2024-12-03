@@ -14,18 +14,27 @@ public class UDPComm {
         try {
             // envia msg para destino
             InetAddress addr = InetAddress.getByName(host);
+
+            // Converte a mensagem para bytes corretamente
+            byte[] msgBytes = msgByte;
+
             // monta o pacote a ser enviado
-            DatagramPacket pkg = new DatagramPacket(charToByte(msg), msg.length, addr, port);
+            DatagramPacket pkg = new DatagramPacket(msgBytes, msgBytes.length, addr, port);
+
             // cria o DatagramSocket que será responsável por enviar a mensagem
             DatagramSocket ds = new DatagramSocket();
+
             // envia a mensagem
             ds.send(pkg);
             ds.close();
+
             return true;
-        } catch (IOException ioe) {
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
+
 
     public boolean receiveMsg() {
         byte[] msgByte = new byte[256];
@@ -65,6 +74,7 @@ public class UDPComm {
         this.host = host;
         this.port = port;
     }
+
     public UDPComm(int port) {
         this.port = port;
     }
