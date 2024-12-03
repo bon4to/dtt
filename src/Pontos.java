@@ -1,7 +1,6 @@
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -9,10 +8,12 @@ import javafx.scene.image.ImageView;
 
 public class Pontos {
     final byte ESTILO_PADRAO = 0;
-    final byte ESTILO_PARA1RODADA = 1;
-    final byte ESTILO_AVANCA2 = 2;
+    final byte ESTILO_PARARODADA = 1;
+    final byte ESTILO_AVANCADOIS = 2;
     final byte ESTILO_VOLTAINICIO = 3;
+
     byte estilo = ESTILO_PADRAO;
+
     Point2D ponto;
     Circle circulo;
     final int TAMANHOCIRCULO = 5;
@@ -31,11 +32,11 @@ public class Pontos {
             case ESTILO_PADRAO:
                 circulo.setFill(Color.GREEN);
                 break;
-            case ESTILO_PARA1RODADA:
-                circulo.setFill(Color.BLUE);
+            case ESTILO_PARARODADA:
+                circulo.setFill(Color.LIGHTBLUE);
                 break;
-            case ESTILO_AVANCA2:
-                circulo.setFill(Color.YELLOW);
+            case ESTILO_AVANCADOIS:
+                circulo.setFill(Color.LIGHTYELLOW);
                 break;
             case ESTILO_VOLTAINICIO:
                 circulo.setFill(Color.RED);
